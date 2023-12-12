@@ -32,7 +32,10 @@ var FallingBall = /** @class */ (function () {
         this.isRandom = true;
         this.colorPicker = document.getElementById('colorPicker');
         this.colorPicker.value = this.getRandomColor();
-        this.colorPicker.onclick = function () { return _this.handleRandomBtnClick(); };
+        this.colorPicker.onclick = function () {
+            _this.isRandom = false;
+            _this.updateRandomBtnText();
+        };
         this.randomColorBtn = document.getElementById('randomColorBtn');
         this.randomColorBtn.onclick = function () { return _this.handleRandomBtnClick(); };
         this.updateRandomBtnText();

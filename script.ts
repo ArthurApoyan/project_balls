@@ -36,7 +36,10 @@ class FallingBall {
 
         this.colorPicker = <HTMLInputElement>document.getElementById('colorPicker')!;
         this.colorPicker.value = this.getRandomColor();
-        this.colorPicker.onclick = () => this.handleRandomBtnClick();
+        this.colorPicker.onclick = () => {
+            this.isRandom = false;
+            this.updateRandomBtnText();
+        };
 
         this.randomColorBtn = document.getElementById('randomColorBtn')!;
         this.randomColorBtn.onclick = () => this.handleRandomBtnClick();
