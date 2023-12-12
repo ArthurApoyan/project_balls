@@ -10,18 +10,6 @@ var FallingBall = /** @class */ (function () {
         this.clickAnimationFrames = 20;
         this.clickAnimationRadius = Math.abs(Math.random() * 25 + 20);
         this.backgroundIndex = 0;
-        this.coverImg = function (type) {
-            var imgRatio = _this.backgroundImage.height / _this.backgroundImage.width;
-            var winRatio = window.innerHeight / window.innerWidth;
-            if ((imgRatio < winRatio && type === 'contain') || (imgRatio > winRatio && type === 'cover')) {
-                var h = window.innerWidth * imgRatio;
-                _this.context.drawImage(_this.backgroundImage, 0, (window.innerHeight - h) / 2, window.innerWidth, h);
-            }
-            if ((imgRatio > winRatio && type === 'contain') || (imgRatio < winRatio && type === 'cover')) {
-                var w = window.innerWidth * winRatio / imgRatio;
-                _this.context.drawImage(_this.backgroundImage, (window.innerWidth - w) / 2, 0, w, window.innerHeight);
-            }
-        };
         this.canvas = document.querySelector('canvas');
         this.context = this.canvas.getContext('2d');
         this.canvas.width = window.innerWidth;
@@ -39,6 +27,9 @@ var FallingBall = /** @class */ (function () {
         this.randomColorBtn = document.getElementById('randomColorBtn');
         this.randomColorBtn.onclick = function () { return _this.handleRandomBtnClick(); };
         this.updateRandomBtnText();
+        this.closeBtn = document.getElementById('closeBtn');
+        this.closeBtn.onclick = function () { return _this.closeInfoMenu(); };
+        this.infoMenu = document.getElementById('infoMenu');
         requestAnimationFrame(function (time) { return _this.animate(time); });
     }
     FallingBall.prototype.handleCanvasClick = function (event) {
@@ -110,6 +101,21 @@ var FallingBall = /** @class */ (function () {
     };
     FallingBall.prototype.updateRandomBtnText = function () {
         this.randomColorBtn.innerText = this.isRandom ? 'Random Colors On' : 'Random Colors Off';
+    };
+    FallingBall.prototype.coverImg = function (type) {
+        var imgRatio = this.backgroundImage.height / this.backgroundImage.width;
+        var winRatio = window.innerHeight / window.innerWidth;
+        if ((imgRatio < winRatio && type === 'contain') || (imgRatio > winRatio && type === 'cover')) {
+            var h = window.innerWidth * imgRatio;
+            this.context.drawImage(this.backgroundImage, 0, (window.innerHeight - h) / 2, window.innerWidth, h);
+        }
+        if ((imgRatio > winRatio && type === 'contain') || (imgRatio < winRatio && type === 'cover')) {
+            var w = window.innerWidth * winRatio / imgRatio;
+            this.context.drawImage(this.backgroundImage, (window.innerWidth - w) / 2, 0, w, window.innerHeight);
+        }
+    };
+    FallingBall.prototype.closeInfoMenu = function () {
+        this.infoMenu.style.display = 'none';
     };
     FallingBall.prototype.animate = function (currentTime) {
         var _this = this;

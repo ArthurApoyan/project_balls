@@ -19,6 +19,8 @@ class FallingBall {
     private clickAnimationRadius: number = Math.abs(Math.random() * 25 + 20);
     private colorPicker: HTMLInputElement;
     private randomColorBtn: HTMLElement;
+    private closeBtn: HTMLElement;
+    private infoMenu: HTMLElement;
     private isRandom: boolean;
     private backgroundIndex: number = 0;
 
@@ -44,6 +46,10 @@ class FallingBall {
         this.randomColorBtn = document.getElementById('randomColorBtn')!;
         this.randomColorBtn.onclick = () => this.handleRandomBtnClick();
         this.updateRandomBtnText();
+
+        this.closeBtn = document.getElementById('closeBtn')!;
+        this.closeBtn.onclick = () => this.closeInfoMenu();
+        this.infoMenu = document.getElementById('infoMenu')!;
 
         requestAnimationFrame((time) => this.animate(time));
     }
@@ -127,7 +133,7 @@ class FallingBall {
         this.randomColorBtn.innerText = this.isRandom ? 'Random Colors On' : 'Random Colors Off';
     }
 
-    coverImg = (type:string) => {
+    coverImg(type:string){
         const imgRatio = this.backgroundImage.height / this.backgroundImage.width
         const winRatio = window.innerHeight / window.innerWidth
         if ((imgRatio < winRatio && type === 'contain') || (imgRatio > winRatio && type === 'cover')) {
@@ -138,6 +144,10 @@ class FallingBall {
             const w = window.innerWidth * winRatio / imgRatio
             this.context.drawImage(this.backgroundImage, (window.innerWidth - w) / 2, 0, w, window.innerHeight)
         }
+    }
+
+    closeInfoMenu(){
+        this.infoMenu.style.display = 'none';
     }
 
     animate(currentTime: number) {
