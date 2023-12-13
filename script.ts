@@ -33,6 +33,7 @@ class FallingBall {
         this.getBackgroundSource(this.backgroundIndex);
 
         this.canvas.addEventListener('click', this.handleCanvasClick.bind(this));
+        window.addEventListener('keydown', this.handleCanvasClick.bind(this));
         this.canvas.addEventListener('contextmenu', this.changeBackground.bind(this));
 
         this.isRandom = true;
@@ -56,22 +57,35 @@ class FallingBall {
         requestAnimationFrame((time) => this.animate(time));
     }
 
-    handleCanvasClick(event: MouseEvent) {
-        const newBall = {
-            x: event.clientX,
-            y: event.clientY,
-            radius: Math.abs(Math.random() * 30) + 1,
-            velocity: 0,
-            color: this.isRandom ? this.getRandomColor() : this.colorPicker.value,
-            clickAnimationFrames: this.clickAnimationFrames,
-        };
+    handleCanvasClick(event: MouseEvent | KeyboardEvent) {
+        let newBall;
+        if(event instanceof MouseEvent){
+            newBall = {
+                x: event.clientX,
+                y: event.clientY,
+                radius: Math.abs(Math.random() * 30) + 1,
+                velocity: 0,
+                color: this.isRandom ? this.getRandomColor() : this.colorPicker.value,
+                clickAnimationFrames: this.clickAnimationFrames,
+            };
+        }else if(event instanceof KeyboardEvent && event.key == ' '){
+            newBall = {
+                x: Math.abs(Math.random() * (window.innerWidth - 600)) + 300,
+                y: Math.abs(Math.random() * window.innerHeight) + 200,
+                radius: Math.abs(Math.random() * 30) + 1,
+                velocity: 0,
+                color: this.isRandom ? this.getRandomColor() : this.colorPicker.value,
+                clickAnimationFrames: this.clickAnimationFrames,
+            };
+        }
 
-        this.balls.push(newBall);
+
+        newBall && this.balls.push(newBall);
         if (this.balls.length > 15){
             this.animateDestroyClick(this.balls[0]);
         }
 
-        this.animateCreateClick(newBall);
+        newBall && this.animateCreateClick(newBall);
     }
 
     animateCreateClick(ball: Ball) {
@@ -150,7 +164,7 @@ class FallingBall {
 
     closeInfoMenu(){
         this.info.style.display = this.info.style.display == 'block' ? 'none' : 'block';
-        this.infoMenu.style.width = this.info.style.display == 'block' ? '24%' : '8%';
+        this.infoMenu.style.width = this.info.style.display == 'block' ? '27%' : '8%';
         this.closeBtn.style.marginLeft = this.info.style.display == 'block' ? '70%' : '0';
         this.closeBtn.style.width = this.info.style.display == 'block' ? '30%' : '100%';
         this.closeBtn.innerText = this.info.style.display == 'block' ? 'Close Menu' : 'Open Menu';
