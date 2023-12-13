@@ -49,7 +49,7 @@ var FallingBall = /** @class */ (function () {
         else if (event instanceof KeyboardEvent && event.key == ' ') {
             newBall = {
                 x: Math.abs(Math.random() * (window.innerWidth - 600)) + 300,
-                y: Math.abs(Math.random() * window.innerHeight) + 200,
+                y: Math.abs(Math.random() * window.innerHeight),
                 radius: Math.abs(Math.random() * 30) + 1,
                 velocity: 0,
                 color: this.isRandom ? this.getRandomColor() : this.colorPicker.value,
