@@ -20,6 +20,7 @@ class FallingBall {
     private colorPicker: HTMLInputElement;
     private randomColorBtn: HTMLElement;
     private closeBtn: HTMLElement;
+    private info: HTMLElement;
     private infoMenu: HTMLElement;
     private isRandom: boolean;
     private backgroundIndex: number = 0;
@@ -49,6 +50,7 @@ class FallingBall {
 
         this.closeBtn = document.getElementById('closeBtn')!;
         this.closeBtn.onclick = () => this.closeInfoMenu();
+        this.info = document.getElementById('info')!;
         this.infoMenu = document.getElementById('infoMenu')!;
 
         requestAnimationFrame((time) => this.animate(time));
@@ -147,7 +149,11 @@ class FallingBall {
     }
 
     closeInfoMenu(){
-        this.infoMenu.style.display = 'none';
+        this.info.style.display = this.info.style.display == 'block' ? 'none' : 'block';
+        this.infoMenu.style.width = this.info.style.display == 'block' ? '24%' : '8%';
+        this.closeBtn.style.marginLeft = this.info.style.display == 'block' ? '70%' : '0';
+        this.closeBtn.style.width = this.info.style.display == 'block' ? '30%' : '100%';
+        this.closeBtn.innerText = this.info.style.display == 'block' ? 'Close Menu' : 'Open Menu';
     }
 
     animate(currentTime: number) {

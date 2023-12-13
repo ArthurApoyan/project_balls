@@ -29,6 +29,7 @@ var FallingBall = /** @class */ (function () {
         this.updateRandomBtnText();
         this.closeBtn = document.getElementById('closeBtn');
         this.closeBtn.onclick = function () { return _this.closeInfoMenu(); };
+        this.info = document.getElementById('info');
         this.infoMenu = document.getElementById('infoMenu');
         requestAnimationFrame(function (time) { return _this.animate(time); });
     }
@@ -115,7 +116,11 @@ var FallingBall = /** @class */ (function () {
         }
     };
     FallingBall.prototype.closeInfoMenu = function () {
-        this.infoMenu.style.display = 'none';
+        this.info.style.display = this.info.style.display == 'block' ? 'none' : 'block';
+        this.infoMenu.style.width = this.info.style.display == 'block' ? '24%' : '8%';
+        this.closeBtn.style.marginLeft = this.info.style.display == 'block' ? '70%' : '0';
+        this.closeBtn.style.width = this.info.style.display == 'block' ? '30%' : '100%';
+        this.closeBtn.innerText = this.info.style.display == 'block' ? 'Close Menu' : 'Open Menu';
     };
     FallingBall.prototype.animate = function (currentTime) {
         var _this = this;
