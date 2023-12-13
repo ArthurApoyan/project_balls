@@ -164,7 +164,7 @@ class FallingBall {
 
     closeInfoMenu(){
         this.info.style.display = this.info.style.display == 'block' ? 'none' : 'block';
-        this.infoMenu.style.width = this.info.style.display == 'block' ? '27%' : '8%';
+        this.infoMenu.style.width = this.info.style.display == 'block' ? '29%' : '8%';
         this.closeBtn.style.marginLeft = this.info.style.display == 'block' ? '70%' : '0';
         this.closeBtn.style.width = this.info.style.display == 'block' ? '30%' : '100%';
         this.closeBtn.innerText = this.info.style.display == 'block' ? 'Close Menu' : 'Open Menu';
