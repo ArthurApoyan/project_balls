@@ -1,61 +1,43 @@
-"use strict";
+import { Ball } from "./ball.js";
+import { canvas, context, colorPicker, randomColorBtn, closeBtn, info, infoMenu, getRandomColor } from "./tools.js";
 var FallingBall = /** @class */ (function () {
     function FallingBall() {
         var _this = this;
         this.balls = [];
-        this.gravity = 0.7;
+        this.gravity = 1;
         this.lastTime = 1;
         this.backgroundImage = new Image();
         this.backgrounds = ['assets/backgroundImage.jpg', 'assets/backgroundImage_1.jpg', 'assets/backgroundImage_2.jpg'];
         this.clickAnimationFrames = 20;
         this.clickAnimationRadius = Math.abs(Math.random() * 25 + 20);
         this.backgroundIndex = 0;
-        this.canvas = document.querySelector('canvas');
-        this.context = this.canvas.getContext('2d');
+        this.canvas = canvas;
+        this.context = context;
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.getBackgroundSource(this.backgroundIndex);
         this.canvas.addEventListener('click', this.handleCanvasClick.bind(this));
-        window.addEventListener('keydown', this.handleCanvasClick.bind(this));
         this.canvas.addEventListener('contextmenu', this.changeBackground.bind(this));
+        window.addEventListener('keydown', this.handleCanvasClick.bind(this));
         this.isRandom = true;
-        this.colorPicker = document.getElementById('colorPicker');
-        this.colorPicker.value = this.getRandomColor();
+        this.colorPicker = colorPicker;
+        this.colorPicker.value = getRandomColor();
         this.colorPicker.onclick = function () {
             _this.isRandom = false;
             _this.updateRandomBtnText();
         };
-        this.randomColorBtn = document.getElementById('randomColorBtn');
+        this.randomColorBtn = randomColorBtn;
         this.randomColorBtn.onclick = function () { return _this.handleRandomBtnClick(); };
         this.updateRandomBtnText();
-        this.closeBtn = document.getElementById('closeBtn');
+        this.closeBtn = closeBtn;
         this.closeBtn.onclick = function () { return _this.closeInfoMenu(); };
-        this.info = document.getElementById('info');
-        this.infoMenu = document.getElementById('infoMenu');
+        this.info = info;
+        this.infoMenu = infoMenu;
         requestAnimationFrame(function (time) { return _this.animate(time); });
     }
     FallingBall.prototype.handleCanvasClick = function (event) {
-        var newBall;
-        if (event instanceof MouseEvent) {
-            newBall = {
-                x: event.clientX,
-                y: event.clientY,
-                radius: Math.abs(Math.random() * 30) + 1,
-                velocity: 0,
-                color: this.isRandom ? this.getRandomColor() : this.colorPicker.value,
-                clickAnimationFrames: this.clickAnimationFrames,
-            };
-        }
-        else if (event instanceof KeyboardEvent && event.key == ' ') {
-            newBall = {
-                x: Math.abs(Math.random() * (window.innerWidth - 600)) + 300,
-                y: Math.abs(Math.random() * window.innerHeight),
-                radius: Math.abs(Math.random() * 30) + 1,
-                velocity: 0,
-                color: this.isRandom ? this.getRandomColor() : this.colorPicker.value,
-                clickAnimationFrames: this.clickAnimationFrames,
-            };
-        }
+        var newBallObject = new Ball(this.isRandom);
+        var newBall = newBallObject.draw(event);
         newBall && this.balls.push(newBall);
         if (this.balls.length > 15) {
             this.animateDestroyClick(this.balls[0]);
@@ -101,14 +83,6 @@ var FallingBall = /** @class */ (function () {
             this.backgroundIndex++;
         }
         this.getBackgroundSource(this.backgroundIndex);
-    };
-    FallingBall.prototype.getRandomColor = function () {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
     };
     FallingBall.prototype.handleRandomBtnClick = function () {
         this.isRandom = !this.isRandom;
@@ -165,4 +139,6 @@ var FallingBall = /** @class */ (function () {
     };
     return FallingBall;
 }());
-var fallingBall = new FallingBall();
+document.addEventListener('DOMContentLoaded', function () {
+    var fallingBall = new FallingBall();
+});

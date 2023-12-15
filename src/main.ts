@@ -1,17 +1,21 @@
-interface Ball {
-    x: number;
-    y: number;
-    radius: number;
-    clickAnimationFrames: number;
-    velocity: number;
-    color: string;
-}
+import {Ball} from "./ball";
+import {BallType} from "./ball";
+import {
+    canvas,
+    context,
+    colorPicker,
+    randomColorBtn,
+    closeBtn,
+    info,
+    infoMenu,
+    getRandomColor
+} from "./tools";
 
 class FallingBall {
     private canvas: HTMLCanvasElement;
     private context: CanvasRenderingContext2D;
-    private balls: Ball[] = [];
-    private gravity: number = 0.7;
+    private balls: BallType[] = [];
+    private gravity: number = 1;
     private lastTime: number = 1;
     private backgroundImage: HTMLImageElement = new Image();
     private backgrounds: string[] = ['assets/backgroundImage.jpg', 'assets/backgroundImage_1.jpg', 'assets/backgroundImage_2.jpg'];
@@ -26,69 +30,51 @@ class FallingBall {
     private backgroundIndex: number = 0;
 
     constructor() {
-        this.canvas = document.querySelector('canvas')!;
-        this.context = this.canvas.getContext('2d')!;
+        this.canvas = canvas;
+        this.context = context;
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
         this.getBackgroundSource(this.backgroundIndex);
 
         this.canvas.addEventListener('click', this.handleCanvasClick.bind(this));
-        window.addEventListener('keydown', this.handleCanvasClick.bind(this));
         this.canvas.addEventListener('contextmenu', this.changeBackground.bind(this));
+        window.addEventListener('keydown', this.handleCanvasClick.bind(this));
 
         this.isRandom = true;
 
-        this.colorPicker = <HTMLInputElement>document.getElementById('colorPicker')!;
-        this.colorPicker.value = this.getRandomColor();
+        this.colorPicker = colorPicker;
+        this.colorPicker.value = getRandomColor();
         this.colorPicker.onclick = () => {
             this.isRandom = false;
             this.updateRandomBtnText();
         };
 
-        this.randomColorBtn = document.getElementById('randomColorBtn')!;
+        this.randomColorBtn = randomColorBtn;
         this.randomColorBtn.onclick = () => this.handleRandomBtnClick();
         this.updateRandomBtnText();
 
-        this.closeBtn = document.getElementById('closeBtn')!;
+        this.closeBtn = closeBtn;
         this.closeBtn.onclick = () => this.closeInfoMenu();
-        this.info = document.getElementById('info')!;
-        this.infoMenu = document.getElementById('infoMenu')!;
+
+        this.info = info;
+        this.infoMenu = infoMenu;
 
         requestAnimationFrame((time) => this.animate(time));
     }
 
     handleCanvasClick(event: MouseEvent | KeyboardEvent) {
-        let newBall;
-        if(event instanceof MouseEvent){
-            newBall = {
-                x: event.clientX,
-                y: event.clientY,
-                radius: Math.abs(Math.random() * 30) + 1,
-                velocity: 0,
-                color: this.isRandom ? this.getRandomColor() : this.colorPicker.value,
-                clickAnimationFrames: this.clickAnimationFrames,
-            };
-        }else if(event instanceof KeyboardEvent && event.key == ' '){
-            newBall = {
-                x: Math.abs(Math.random() * (window.innerWidth - 600)) + 300,
-                y: Math.abs(Math.random() * window.innerHeight),
-                radius: Math.abs(Math.random() * 30) + 1,
-                velocity: 0,
-                color: this.isRandom ? this.getRandomColor() : this.colorPicker.value,
-                clickAnimationFrames: this.clickAnimationFrames,
-            };
-        }
-
-
+        let newBallObject = new Ball(this.isRandom);
+        let newBall = newBallObject.draw(event);
         newBall && this.balls.push(newBall);
-        if (this.balls.length > 15){
+
+        if (this.balls.length > 15) {
             this.animateDestroyClick(this.balls[0]);
         }
 
         newBall && this.animateCreateClick(newBall);
     }
 
-    animateCreateClick(ball: Ball) {
+    animateCreateClick(ball: BallType) {
         let frameCount = 0;
         const animate = () => {
             frameCount++;
@@ -102,14 +88,14 @@ class FallingBall {
         animate();
     }
 
-    animateDestroyClick(ball: Ball) {
+    animateDestroyClick(ball: BallType) {
         let frameCount = 0;
         const animate = () => {
             frameCount++
             ball.radius -= this.clickAnimationRadius / this.clickAnimationFrames;
             if (frameCount < this.clickAnimationFrames && ball.radius > 0) {
                 requestAnimationFrame(animate);
-            }else{
+            } else {
                 this.balls.shift();
             }
         };
@@ -117,27 +103,18 @@ class FallingBall {
         animate();
     }
 
-    getBackgroundSource(index:number){
+    getBackgroundSource(index: number) {
         return this.backgroundImage.src = this.backgrounds[index];
     }
 
-    changeBackground(e:MouseEvent){
+    changeBackground(e: MouseEvent) {
         e.preventDefault();
-        if(this.backgroundIndex === 2){
+        if (this.backgroundIndex === 2) {
             this.backgroundIndex = 0;
-        }else{
+        } else {
             this.backgroundIndex++
         }
         this.getBackgroundSource(this.backgroundIndex);
-    }
-
-    getRandomColor() {
-        const letters = '0123456789ABCDEF';
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
     }
 
     handleRandomBtnClick() {
@@ -149,7 +126,7 @@ class FallingBall {
         this.randomColorBtn.innerText = this.isRandom ? 'Random Colors On' : 'Random Colors Off';
     }
 
-    coverImg(type:string){
+    coverImg(type: string) {
         const imgRatio = this.backgroundImage.height / this.backgroundImage.width
         const winRatio = window.innerHeight / window.innerWidth
         if ((imgRatio < winRatio && type === 'contain') || (imgRatio > winRatio && type === 'cover')) {
@@ -162,7 +139,7 @@ class FallingBall {
         }
     }
 
-    closeInfoMenu(){
+    closeInfoMenu() {
         this.info.style.display = this.info.style.display == 'block' ? 'none' : 'block';
         this.infoMenu.style.width = this.info.style.display == 'block' ? '29%' : '8%';
         this.closeBtn.style.marginLeft = this.info.style.display == 'block' ? '70%' : '0';
@@ -204,4 +181,6 @@ class FallingBall {
     }
 }
 
-const fallingBall = new FallingBall();
+document.addEventListener('DOMContentLoaded', function () {
+    const fallingBall = new FallingBall();
+});
